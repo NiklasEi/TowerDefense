@@ -52,6 +52,8 @@ public class Main extends JavaPlugin{
 
     private ArenaManager arenaManager;
 
+    private static Main instance;
+
 
     @Override
     public void onEnable(){
@@ -61,6 +63,8 @@ public class Main extends JavaPlugin{
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
+
+        instance = this;
 
         if(getServer().getPluginManager().getPlugin("Citizens") == null || !getServer().getPluginManager().getPlugin("Citizens").isEnabled()) {
             getLogger().severe(" Citizens 2.0 not found or not enabled");
@@ -154,6 +158,10 @@ public class Main extends JavaPlugin{
     @Override
     public void onDisable(){
         if(arenaManager != null) arenaManager.shutDown();
+    }
+
+    public static Main getInstance(){
+        return instance;
     }
 
     @Override
