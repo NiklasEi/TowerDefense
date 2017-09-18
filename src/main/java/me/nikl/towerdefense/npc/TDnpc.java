@@ -2,7 +2,9 @@ package me.nikl.towerdefense.npc;
 
 import me.nikl.towerdefense.Main;
 import net.citizensnpcs.Citizens;
+import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.api.trait.Trait;
 import net.citizensnpcs.npc.CitizensNPC;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -62,12 +64,15 @@ public abstract class TDnpc {
 
     public void despawn(){
         Main.debug("despawning npc...");
-        Main.debug("Entity null? " + (monster.getBukkitEntity() == null));
         Citizens citizens = (Citizens) Bukkit.getPluginManager().getPlugin("Citizens");
         monster.getNavigator().cancelNavigation();
-        //monster.despawn();
-        citizens.getNPCRegistry().deregister(monster);
-        Main.debug("Entity null? " + (monster.getBukkitEntity() == null));
+        Main.debug("canceled nav");
+
+        monster.despawn(DespawnReason.PLUGIN);
+        for (Trait t : monster.getTraits()) {
+            t.onRemove();
+        }
+        Main.debug("deregistered");
     }
 
     public boolean isSpawned() {
