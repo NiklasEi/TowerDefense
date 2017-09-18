@@ -1,0 +1,27 @@
+#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+#                                                                                               #
+#                                      TowerDefense by Nikl                                     #
+#                                                                                               #
+#  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+#
+# get support on Spigot:
+# get support on Discord:
+# report issues/feature requests:
+
+
+
+# define the language file you want to use (find the files in the folder 'language')
+#   to use the default messages just write 'default' (uses the up-to-date english file out of the .jar)
+# If you want custom messages please write your own file or change one of the already written 'lang_xx.yml' files
+# If an update added new messages that are not in your defined file the plugin will print a warning and a list
+#   of missing paths and will use the corresponding default messages until you added them to your file
+# To get an up to date language file just delete one of the included files and reload
+langFile: 'default'
+
+
+# please leave this on true
+bStats: true
+
+# requires vault!
+econ:
+  enabled: true
