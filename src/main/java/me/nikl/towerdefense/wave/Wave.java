@@ -9,6 +9,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 
@@ -21,7 +22,7 @@ public class Wave {
 
     LinkedList<Monster> monsters;
     LinkedList<TDnpc> npcs = new LinkedList<>();
-    int index = 0;
+    int index;
     private Arena arena;
 
     private BukkitTask timer;
@@ -32,6 +33,7 @@ public class Wave {
     }
 
     public void start() {
+        index = 0;
         timer = new BukkitRunnable(){
             @Override
             public void run() {
@@ -80,10 +82,12 @@ public class Wave {
     }
 
     public boolean despawn(NPC npc) {
-        for(TDnpc tdNPC : npcs){
+        Iterator<TDnpc> iterator = npcs.iterator();
+        while(iterator.hasNext()){
+            TDnpc tdNPC = iterator.next();
             if(!npc.equals(tdNPC.getNPC())) continue;
 
-            npcs.remove(tdNPC);
+            iterator.remove();
             tdNPC.despawn();
             if(npcs.isEmpty()){
                 arena.nextWave();
