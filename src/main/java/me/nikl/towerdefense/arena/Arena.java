@@ -154,6 +154,7 @@ public class Arena {
         plugin.getArenaManager().getWavesManager().removeWave(this);
         if(currentWave >= waves.size() - 1) {
             Bukkit.getConsoleSender().sendMessage("  Waves all through! Game is done!");
+            status = ArenaStatus.STOPED;
             return;
         }
         currentWave++;
