@@ -1,7 +1,13 @@
 package me.nikl.towerdefense.npc;
 
+import me.nikl.towerdefense.Main;
+import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.npc.NPC;
+import net.citizensnpcs.npc.CitizensNPC;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 
+import java.util.LinkedList;
 import java.util.UUID;
 
 /**
@@ -10,6 +16,9 @@ import java.util.UUID;
 public abstract class TDnpc {
 
     private NPC monster;
+
+    protected LinkedList<Location> path = new LinkedList<>();
+    protected int currentIndex = 1;
 
     public TDnpc(NPC monster){
         this.monster = monster;
@@ -29,5 +38,39 @@ public abstract class TDnpc {
     public UUID getUuid(){
         if(monster.getBukkitEntity() == null) return null;
         return monster.getBukkitEntity().getUniqueId();
+    }
+
+
+    public TDnpc start(){
+        monster.spawn(path.get(0));
+        monster.getNavigator().setTarget(path.get(currentIndex));
+
+        return this;
+    }
+
+    public boolean nextPath(){
+        currentIndex++;
+        if(currentIndex >= path.size()) return false;
+
+        monster.getNavigator().setTarget(path.get(currentIndex));
+        return true;
+    }
+
+    public void spawn(Location location){
+        monster.spawn(location);
+    }
+
+    public void despawn(){
+        Main.debug("despawning npc...");
+        Main.debug("Entity null? " + (monster.getBukkitEntity() == null));
+        Citizens citizens = (Citizens) Bukkit.getPluginManager().getPlugin("Citizens");
+        monster.getNavigator().cancelNavigation();
+        //monster.despawn();
+        citizens.getNPCRegistry().deregister(monster);
+        Main.debug("Entity null? " + (monster.getBukkitEntity() == null));
+    }
+
+    public boolean isSpawned() {
+        return monster.isSpawned();
     }
 }
