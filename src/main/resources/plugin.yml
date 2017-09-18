@@ -3,3 +3,10 @@ author: Nikl
 main: me.nikl.towerdefense.Main
 version: 0.0.1-Beta
 website: nikl.me
+softdepend: [Citizens]
+
+commands:
+  tdtest:
+    description: test td
+    usage: /tdtest
+    aliases: [tdt]
