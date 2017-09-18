@@ -10,3 +10,11 @@ commands:
     description: test td
     usage: /tdtest
     aliases: [tdt]
+  towerdefense:
+    description: tower defense main command
+    usage: /towerdefense
+    aliases: [td]
+  tdarena:
+    description: tower defense arena command
+    usage: /tdarena
+    aliases: [tda]

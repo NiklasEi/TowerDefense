@@ -1,5 +1,8 @@
 package me.nikl.towerdefense;
 
+import me.nikl.towerdefense.arena.ArenaManager;
+import me.nikl.towerdefense.command.ArenaCommand;
+import me.nikl.towerdefense.command.MainCommand;
 import me.nikl.towerdefense.command.Testing;
 import net.citizensnpcs.Citizens;
 import net.citizensnpcs.api.ai.event.NavigationCompleteEvent;
@@ -29,7 +32,7 @@ import java.util.logging.Level;
  * Created by Niklas on 18.09.2017.
  *
  */
-public class Main extends JavaPlugin implements Listener{
+public class Main extends JavaPlugin{
 
     // enable debug mode (print debug messages)
     public static final boolean debug = true;
@@ -47,13 +50,7 @@ public class Main extends JavaPlugin implements Listener{
     // plugin configuration
     private FileConfiguration config;
 
-    private NPC npc;
-
-
-    Location loc1 = new Location(Bukkit.getWorld("world"), 188, 99, 233);
-    Location loc2 = new Location(Bukkit.getWorld("world"), 198, 99, 233);
-    Location loc3 = new Location(Bukkit.getWorld("world"), 198, 99, 223);
-    Location loc4 = new Location(Bukkit.getWorld("world"), 191, 99, 223);
+    private ArenaManager arenaManager;
 
 
     @Override
@@ -72,18 +69,12 @@ public class Main extends JavaPlugin implements Listener{
             return;
         }
 
-        this.getCommand("tdtest").setExecutor(new Testing(this));
 
-        citizens = (Citizens) getServer().getPluginManager().getPlugin("Citizens");
-        Iterator<NPC> it = citizens.getNPCRegistry().iterator();
-        while (it.hasNext()){
-            it.next().despawn();
-        }
-        npc = citizens.getNPCRegistry().createNPC(EntityType.VILLAGER, "Boy");
-        //npc.getDefaultGoalController().clear();
-        npc.getNavigator().getLocalParameters().speedModifier(0.5f);
-        npc.spawn(loc1);
-        npc.getNavigator().setTarget(loc2);
+        this.getCommand("towerdefense").setExecutor(new MainCommand(this));
+        this.getCommand("tdarena").setExecutor(new ArenaCommand(this));
+
+        // debug cmd...
+        this.getCommand("tdtest").setExecutor(new Testing(this));
 
         // send data with bStats if not opt out
         if(TDSettings.bStats) {
@@ -92,17 +83,6 @@ public class Main extends JavaPlugin implements Listener{
         } else {
             Bukkit.getConsoleSender().sendMessage(lang.PREFIX + " You have opt out bStats");
         }
-    }
-
-    @EventHandler
-    public void onNavigationComplete(NavigationCompleteEvent event){
-        if(event.getNPC() != npc) return;
-
-        debug("nv complete...");
-
-        npc.destroy();
-        npc.spawn(loc1);
-        npc.getNavigator().setTarget(loc2);
     }
 
     /***
@@ -132,6 +112,12 @@ public class Main extends JavaPlugin implements Listener{
                 return false;
             }
         }
+
+        if(arenaManager != null){
+            arenaManager.shutDown();
+        }
+        arenaManager = new ArenaManager(this);
+
         return true;
     }
 
@@ -167,7 +153,7 @@ public class Main extends JavaPlugin implements Listener{
 
     @Override
     public void onDisable(){
-
+        if(arenaManager != null) arenaManager.shutDown();
     }
 
     @Override
@@ -177,5 +163,13 @@ public class Main extends JavaPlugin implements Listener{
 
     public static void debug(String message){
         if(debug) Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_AQUA + "TD-DEBUG: " + ChatColor.RESET + message);
+    }
+
+    public ArenaManager getArenaManager() {
+        return arenaManager;
+    }
+
+    public Language getLanguage() {
+        return lang;
     }
 }
