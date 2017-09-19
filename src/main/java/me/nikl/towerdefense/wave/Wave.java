@@ -97,4 +97,20 @@ public class Wave {
         Main.debug("A NPC was not found in its wave!");
         return false;
     }
+
+    public boolean remove(NPC npc) {
+        Iterator<TDnpc> iterator = npcs.iterator();
+        while(iterator.hasNext()){
+            TDnpc tdNPC = iterator.next();
+            if(!npc.equals(tdNPC.getNPC())) continue;
+
+            iterator.remove();
+            if(npcs.isEmpty()){
+                arena.nextWave();
+            }
+            return true;
+        }
+        Main.debug("A NPC was not found in its wave!");
+        return false;
+    }
 }
