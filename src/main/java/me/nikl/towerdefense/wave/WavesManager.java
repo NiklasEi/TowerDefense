@@ -3,6 +3,12 @@ package me.nikl.towerdefense.wave;
 import me.nikl.towerdefense.Main;
 import me.nikl.towerdefense.arena.Arena;
 import net.citizensnpcs.api.ai.event.NavigationCompleteEvent;
+import net.citizensnpcs.api.event.NPCCombustByBlockEvent;
+import net.citizensnpcs.api.event.NPCCombustByEntityEvent;
+import net.citizensnpcs.api.event.NPCCombustEvent;
+import net.citizensnpcs.api.event.NPCDamageEvent;
+import net.citizensnpcs.api.event.NPCDeathEvent;
+import net.citizensnpcs.api.npc.NPC;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -42,5 +48,41 @@ public class WavesManager implements Listener{
                 wave.despawn(event.getNPC());
             }
         }
+    }
+
+
+    @EventHandler
+    public void onNPCCombustB(NPCCombustByBlockEvent event) {
+        Main.debug("NPCCombustByBlockEvent");
+    }
+
+    @EventHandler
+    public void onNPCCombustE(NPCCombustByEntityEvent event) {
+        Main.debug("NPCCombustByEntityEvent");
+    }
+
+    @EventHandler
+    public void onNPCDamage(NPCDamageEvent event) {
+        Main.debug("NPCDamageEvent");
+    }
+
+    @EventHandler
+    public void onNPCDeath(NPCDeathEvent event) {
+        Main.debug("NPCDeathEvent");
+        Wave wave = getWaveByNPC(event.getNPC());
+
+        if(wave == null) return;
+
+        wave.remove(event.getNPC());
+    }
+
+    private Wave getWaveByNPC(NPC npc){
+        Wave wave;
+        for(Arena arena : currentWaves.keySet()) {
+            wave = currentWaves.get(arena);
+            if (!wave.isMonster(npc)) continue;
+            return wave;
+        }
+        return null;
     }
 }
