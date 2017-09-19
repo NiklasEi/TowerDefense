@@ -6,6 +6,7 @@ import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.npc.CitizensNPC;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.LinkedList;
 import java.util.UUID;
@@ -28,7 +29,7 @@ public abstract class TDnpc {
         monster.getNavigator().getLocalParameters().baseSpeed(1f);
         monster.getNavigator().getLocalParameters().range(50f);
 
-        monster.data().set(NPC.DEFAULT_PROTECTED_METADATA, true);
+        monster.data().set(NPC.DEFAULT_PROTECTED_METADATA, false);
     }
 
     public NPC getNPC(){
@@ -61,13 +62,19 @@ public abstract class TDnpc {
     }
 
     public void despawn(){
-        Main.debug("despawning npc...");
-        Citizens citizens = (Citizens) Bukkit.getPluginManager().getPlugin("Citizens");
-        monster.getNavigator().cancelNavigation();
-        Main.debug("canceled nav");
-        //monster.despawn();
-        citizens.getNPCRegistry().deregister(monster);
-        Main.debug("deregistered");
+        new BukkitRunnable(){
+
+            @Override
+            public void run() {
+                Main.debug("despawning npc...");
+                Citizens citizens = (Citizens) Bukkit.getPluginManager().getPlugin("Citizens");
+                //monster.getNavigator().cancelNavigation();
+                //Main.debug("canceled nav");
+                //monster.despawn();
+                citizens.getNPCRegistry().deregister(monster);
+                Main.debug("deregistered");
+            }
+        }.runTaskLater(Main.getInstance(), 2);
     }
 
     public boolean isSpawned() {
