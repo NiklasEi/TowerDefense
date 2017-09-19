@@ -49,6 +49,29 @@ public class ArenaCommand implements CommandExecutor{
             case 2:
                 arena = arenaManager.getArena(args[0]);
                 switch (args[1].toLowerCase()){
+
+                    case "create":
+                        if(arena != null){
+                            sender.sendMessage(lang.PREFIX + " The arena " + args[0] + " already exist!");
+                            return true;
+                        }
+                        arenaManager.createArena(args[0]);
+                        sender.sendMessage(lang.PREFIX + args[0] + " has been created!");
+                        return true;
+
+                    case "path":
+                        if(arena == null){
+                            sender.sendMessage(lang.PREFIX + " The arena " + args[0] + " doesn't exist!");
+                            return true;
+                        }
+                        if(!(sender instanceof Player)){
+                            sender.sendMessage(lang.PREFIX + " Only as a player!");
+                            return true;
+                        }
+                        arena.addLocationToPath(((Player)sender).getLocation());
+                        sender.sendMessage(lang.PREFIX + " Location was added to path of " + args[0]);
+                        return true;
+
                     case "init":
                     case "initialize":
                         if(arena == null){
@@ -65,34 +88,7 @@ public class ArenaCommand implements CommandExecutor{
                             sender.sendMessage(lang.PREFIX + args[0] + " has been initialized!");
                         }
                         return true;
-                    case "create":
-                        if(arena != null){
-                            sender.sendMessage(lang.PREFIX + " The arena " + args[0] + " already exist!");
-                            return true;
-                        }
-                        arenaManager.createArena(args[0]);
-                        sender.sendMessage(lang.PREFIX + args[0] + " has been created!");
-                        return true;
-                    case "path":
-                        if(arena == null){
-                            sender.sendMessage(lang.PREFIX + " The arena " + args[0] + " doesn't exist!");
-                            return true;
-                        }
-                        if(!(sender instanceof Player)){
-                            sender.sendMessage(lang.PREFIX + " Only as a player!");
-                            return true;
-                        }
-                        arena.addLocationToPath(((Player)sender).getLocation());
-                        sender.sendMessage(lang.PREFIX + " Location was added to path of " + args[0]);
-                        return true;
-                    case "clear":
-                        if(arena == null){
-                            sender.sendMessage(lang.PREFIX + " The arena " + args[0] + " doesn't exist!");
-                            return true;
-                        }
-                        arena.clear();
-                        sender.sendMessage(lang.PREFIX + args[0] + " has been cleared!");
-                        return true;
+
                     case "start":
                         if(arena == null){
                             sender.sendMessage(lang.PREFIX + " The arena " + args[0] + " doesn't exist!");
@@ -106,10 +102,26 @@ public class ArenaCommand implements CommandExecutor{
                         }
                         return true;
 
+                    case "clear":
+                        if(arena == null){
+                            sender.sendMessage(lang.PREFIX + " The arena " + args[0] + " doesn't exist!");
+                            return true;
+                        }
+                        arena.clear();
+                        sender.sendMessage(lang.PREFIX + args[0] + " has been cleared!");
+                        return true;
+
+                    default:
+                        sender.sendMessage(lang.PREFIX + " possible options:");
+                        sender.sendMessage(lang.PREFIX + "  /tda " + args[0] + " <create:path:init:start:clear>");
+                        return true;
                 }
 
         }
 
-        return false;
+        sender.sendMessage(lang.PREFIX + " Command not found");
+        sender.sendMessage(lang.PREFIX + "   /tda <arenaName>");
+        sender.sendMessage(lang.PREFIX + "   /tda <arenaName> <create:path:init:start:clear>");
+        return true;
     }
 }
