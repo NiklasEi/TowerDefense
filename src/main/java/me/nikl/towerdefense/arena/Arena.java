@@ -37,6 +37,8 @@ public class Arena {
 
     private Citizens citizens;
 
+    private ArenaTimer arenaTimer;
+
     public Arena(Main plugin, String arenaName){
         this.plugin = plugin;
         citizens = (Citizens) plugin.getServer().getPluginManager().getPlugin("Citizens");
@@ -50,6 +52,8 @@ public class Arena {
         monsters2.add(Monster.ZOMBIE);
         monsters2.add(Monster.ZOMBIE);
         waves.add(new Wave(this, monsters2));
+
+        this.arenaTimer = new ArenaTimer(plugin, this);
 
         this.status = ArenaStatus.UNINITIALIZED;
     }
@@ -155,6 +159,7 @@ public class Arena {
         if(currentWave >= waves.size() - 1) {
             Bukkit.getConsoleSender().sendMessage("  Waves all through! Game is done!");
             status = ArenaStatus.STOPED;
+            currentWave = 0;
             return;
         }
         currentWave++;
