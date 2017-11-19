@@ -18,6 +18,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 import java.util.logging.Level;
 
 /**
@@ -41,8 +42,6 @@ public class Main extends JavaPlugin{
 
     private ArenaManager arenaManager;
 
-    private static Main instance;
-
 
     @Override
     public void onEnable(){
@@ -52,16 +51,6 @@ public class Main extends JavaPlugin{
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
-
-        instance = this;
-
-        if(getServer().getPluginManager().getPlugin("Citizens") == null || !getServer().getPluginManager().getPlugin("Citizens").isEnabled()) {
-            getLogger().severe(" Citizens 2.0 not found or not enabled");
-            getLogger().severe("   shutting down!");
-            getServer().getPluginManager().disablePlugin(this);
-            return;
-        }
-
 
         this.getCommand("towerdefense").setExecutor(new MainCommand(this));
         this.getCommand("tdarena").setExecutor(new ArenaCommand(this));
@@ -74,7 +63,7 @@ public class Main extends JavaPlugin{
             metrics = new Metrics(this);
             debug("metrics are running...");
         } else {
-            Bukkit.getConsoleSender().sendMessage(lang.PREFIX + " You have opt out bStats");
+            Bukkit.getConsoleSender().sendMessage(lang.PREFIX + " You have opt out bStats *nikl is sad*");
         }
     }
 
@@ -88,8 +77,6 @@ public class Main extends JavaPlugin{
 
         if (!reloadConfiguration()) {
             getLogger().severe(" Failed to load config file!");
-
-            Bukkit.getPluginManager().disablePlugin(this);
             return false;
         }
 
@@ -101,7 +88,7 @@ public class Main extends JavaPlugin{
 
         if(TDSettings.econEnabled){
             if (!setupEconomy()){
-                Bukkit.getLogger().log(Level.SEVERE, "No economy found!");
+                Bukkit.getLogger().log(Level.SEVERE, "No economy found, but it is configured!");
                 return false;
             }
         }
@@ -149,10 +136,6 @@ public class Main extends JavaPlugin{
         if(arenaManager != null) arenaManager.shutDown();
     }
 
-    public static Main getInstance(){
-        return instance;
-    }
-
     @Override
     public FileConfiguration getConfig() {
         return config;
@@ -160,6 +143,13 @@ public class Main extends JavaPlugin{
 
     public static void debug(String message){
         if(debug) Bukkit.getConsoleSender().sendMessage(ChatColor.DARK_AQUA + "TD-DEBUG: " + ChatColor.RESET + message);
+    }
+
+    public static void debug(List<String> messages){
+        if(!debug) return;
+        for(String message : messages){
+            debug(message);
+        }
     }
 
     public ArenaManager getArenaManager() {

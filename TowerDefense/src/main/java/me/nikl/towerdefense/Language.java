@@ -15,9 +15,10 @@ import java.util.List;
 
 public class Language {
 	private Main plugin;
-	private FileConfiguration langFile;
+	private FileConfiguration language;
 	
-	public String PREFIX = "[TowerDefense]", NAME = "&1TowerDefense&r";
+	public String PREFIX = "[TowerDefense]", NAME = "&1TowerDefense&r"
+			, PLAIN_PREFIX, PLAIN_NAME;
 	private YamlConfiguration defaultLang;
 
 
@@ -25,21 +26,23 @@ public class Language {
 		this.plugin = plugin;
 		getLangFile();
 		PREFIX = getString("prefix");
+		PLAIN_PREFIX = ChatColor.stripColor(PREFIX);
 		NAME = getString("name");
+		PLAIN_NAME = ChatColor.stripColor(NAME);
 
 	}
 
 
 	private List<String> getStringList(String path) {
 		List<String> toReturn;
-		if(!langFile.isList(path)){
+		if(!language.isList(path)){
 			toReturn = defaultLang.getStringList(path);
 			for(int i = 0; i<toReturn.size(); i++){
 				toReturn.set(i, ChatColor.translateAlternateColorCodes('&',toReturn.get(i)));
 			}
 			return toReturn;
 		}
-		toReturn = langFile.getStringList(path);
+		toReturn = language.getStringList(path);
 		for(int i = 0; i<toReturn.size(); i++){
 			toReturn.set(i, ChatColor.translateAlternateColorCodes('&',toReturn.get(i)));
 		}
@@ -47,11 +50,11 @@ public class Language {
 	}
 
 	private String getString(String path) {
-		if(!langFile.isString(path)){
+		if(!language.isString(path)){
 			// get string from default lang file
 			return ChatColor.translateAlternateColorCodes('&',defaultLang.getString(path));
 		}
-		return ChatColor.translateAlternateColorCodes('&',langFile.getString(path));
+		return ChatColor.translateAlternateColorCodes('&', language.getString(path));
 	}
 
 	private void getLangFile() {
@@ -80,12 +83,12 @@ public class Language {
 			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', PREFIX + " langFile: 'lang_en.yml'"));
 			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&4*******************************************************"));
 			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', PREFIX + " &4Using default language file"));
-			this.langFile = defaultLang;
+			this.language = defaultLang;
 			return;
 		}
 		String fileName = plugin.getConfig().getString("langFile");
 		if(fileName.equalsIgnoreCase("default") || fileName.equalsIgnoreCase("default.yml")){
-			this.langFile = defaultLang;
+			this.language = defaultLang;
 			return;
 		}
 		File languageFile = new File(plugin.getDataFolder().toString() + File.separatorChar + "language" + File.separatorChar + plugin.getConfig().getString("langFile"));
@@ -95,24 +98,24 @@ public class Language {
 			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', PREFIX + " &4Language file not found!"));
 			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&4*******************************************************"));
 			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', PREFIX + " &4Using default language file"));
-			this.langFile = defaultLang;
+			this.language = defaultLang;
 			return;
 		}
 		try { 
-			this.langFile = YamlConfiguration.loadConfiguration(new InputStreamReader(new FileInputStream(languageFile), "UTF-8"));
+			this.language = YamlConfiguration.loadConfiguration(new InputStreamReader(new FileInputStream(languageFile), "UTF-8"));
 		} catch (UnsupportedEncodingException | FileNotFoundException e) {
 			e.printStackTrace(); 
 			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&4*******************************************************"));
 			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', PREFIX + " &4Error in language file!"));
 			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', "&4*******************************************************"));
 			Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', PREFIX + " &4Using default language file"));
-			this.langFile = defaultLang;
+			this.language = defaultLang;
 			return;
 		}
 		int count = 0;
 		for(String key : defaultLang.getKeys(true)){
 			if(defaultLang.isString(key)){
-				if(!this.langFile.isString(key)){// there is a message missing
+				if(!this.language.isString(key)){// there is a message missing
 					if(count == 0){
 						Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', PREFIX + " &4*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*"));
 						Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', PREFIX + " &4Missing message(s) in your language file!"));
@@ -121,7 +124,7 @@ public class Language {
 					count++;
 				}
 			} else if (defaultLang.isList(key)){
-				if(!this.langFile.isList(key)){// there is a message missing
+				if(!this.language.isList(key)){// there is a message missing
 					if(count == 0){
 						Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', PREFIX + " &4*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*"));
 						Bukkit.getConsoleSender().sendMessage(ChatColor.translateAlternateColorCodes('&', PREFIX + " &4Missing message(s) in your language file!"));

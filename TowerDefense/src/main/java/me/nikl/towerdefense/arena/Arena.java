@@ -1,7 +1,8 @@
 package me.nikl.towerdefense.arena;
 
 import me.nikl.towerdefense.Main;
-import me.nikl.towerdefense.util.StringUtil;
+import me.nikl.towerdefense.arena.waves.WaveManager;
+import me.nikl.towerdefense.util.LocationUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -25,6 +26,7 @@ public class Arena {
 
     private ArenaStatus status;
 
+    private String arenaID;
     private String name;
 
     private LinkedList<Location> path = new LinkedList<>();
@@ -34,8 +36,14 @@ public class Arena {
 
     private ArenaTimer arenaTimer;
 
-    public Arena(Main plugin, String arenaName){
+    private WaveManager waveManager;
+
+    public Arena(Main plugin, String arenaID){
         this.plugin = plugin;
+        this.arenaID = arenaID;
+
+        // default name is unique
+        this.name = arenaID;
 
         this.arenaTimer = new ArenaTimer(plugin, this);
 
@@ -88,7 +96,7 @@ public class Arena {
 
         //waves.get(currentWave).shutDown();
 
-        File saveFile = new File(plugin.getDataFolder().toString() + File.separatorChar + "arenas" + File.separatorChar + name + ".yml");
+        File saveFile = new File(plugin.getDataFolder().toString() + File.separatorChar + "arenas" + File.separatorChar + arenaID + ".yml");
         if(!saveFile.exists()){
             saveFile.getParentFile().mkdirs();
             try {
@@ -111,7 +119,7 @@ public class Arena {
         int index = 0;
 
         for(Location loc : path) {
-            save.set("loc." + index, StringUtil.serializeLoc(loc));
+            save.set("loc." + index, LocationUtil.serializeLoc(loc));
             index++;
         }
 
@@ -141,5 +149,17 @@ public class Arena {
         currentWave++;
         waves.get(currentWave);//.start();
         plugin.getArenaManager().getWavesManager();//.addWave(this, waves.get(currentWave));
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public WaveManager getWaveManager() {
+        return waveManager;
     }
 }

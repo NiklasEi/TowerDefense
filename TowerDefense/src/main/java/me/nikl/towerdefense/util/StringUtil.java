@@ -1,54 +1,27 @@
 package me.nikl.towerdefense.util;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.World;
 
-import java.util.Locale;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Created by Niklas on 18.09.2017.
+ * Created by nikl on 15.11.17.
+ *
+ * String related utility functions
  */
 public class StringUtil {
 
-    public static String color(String string){
-        return ChatColor.translateAlternateColorCodes('&', string);
-    }
-
-    public static String serializeLoc(Location loc){
-        if(loc == null) return "null";
-        return loc.getWorld().getName() + ":" + String.format(Locale.US,"%.2f", loc.getX()) +
-                ":" + String.format(Locale.US,"%.2f", loc.getY()) + ":" + String.format(Locale.US,"%.2f", loc.getZ()) +
-                ":" + String.format(Locale.US,"%.2f", loc.getPitch()) + ":" + String.format(Locale.US,"%.2f", loc.getYaw());
-    }
-
-    public static Location deSerializeLoc(String locationString){
-        String[] locSplit = locationString.split(":");
-
-        if(locSplit.length != 6) return null;
-
-        World world = Bukkit.getWorld(locSplit[0]);
-
-        double x,y,z;
-        float pitch, yaw;
-
-        try {
-            x = Double.valueOf(locSplit[1]);
-            y = Double.valueOf(locSplit[2]);
-            z = Double.valueOf(locSplit[3]);
-
-            pitch = Float.valueOf(locSplit[4]);
-            yaw = Float.valueOf(locSplit[5]);
-
-            return new Location(world, x, y, z, pitch, yaw);
-
-        } catch (NumberFormatException exception){
-            exception.printStackTrace();
+    public static ArrayList<String> color(List<String> list){
+        ArrayList<String> toReturn = new ArrayList(list);
+        for(int i = 0; i < list.size(); i++){
+            toReturn.set(i, color(toReturn.get(i)));
         }
-
-        return null;
+        return toReturn;
     }
 
+    public static String color(String message){
+        return ChatColor.translateAlternateColorCodes('&', message);
+    }
 
 }

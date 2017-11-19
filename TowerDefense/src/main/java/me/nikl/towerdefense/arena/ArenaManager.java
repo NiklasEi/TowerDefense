@@ -1,7 +1,7 @@
 package me.nikl.towerdefense.arena;
 
 import me.nikl.towerdefense.Main;
-import me.nikl.towerdefense.util.StringUtil;
+import me.nikl.towerdefense.util.LocationUtil;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -11,6 +11,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
+import java.util.logging.Level;
 
 /**
  * Created by Niklas on 18.09.2017.
@@ -19,13 +20,10 @@ public class ArenaManager {
 
     private Main plugin;
 
-    //private WavesManager wavesManager;
-
     private HashMap<String, Arena> arenas = new HashMap<>();
 
     public ArenaManager(Main plugin){
         this.plugin = plugin;
-        //this.wavesManager = new WavesManager(plugin);
 
         loadArenas();
     }
@@ -46,8 +44,8 @@ public class ArenaManager {
         }
     }
 
-    private void loadArena(File file, String arenaName) {
-        Arena arena = new Arena(plugin, arenaName);
+    private void loadArena(File file, String arenaID) {
+        Arena arena = new Arena(plugin, arenaID);
 
         FileConfiguration save;
         try {
@@ -57,26 +55,29 @@ public class ArenaManager {
             return;
         }
 
-        for(String index : save.getConfigurationSection("loc").getKeys(false)){
-            arena.addLocationToPath(StringUtil.deSerializeLoc(save.getString("loc." + index)));
+        if(!save.isConfigurationSection("loc")){
+            plugin.getLogger().log(Level.WARNING, " Failed to load the arena " + arenaID);
+            return;
+        }
 
-            Main.debug(StringUtil.serializeLoc(StringUtil.deSerializeLoc(save.getString("loc." + index))));
+        for(String index : save.getConfigurationSection("loc").getKeys(false)){
+            arena.addLocationToPath(LocationUtil.deSerializeLoc(save.getString("loc." + index)));
         }
 
         arena.initialize();
 
-        arenas.put(arenaName, arena);
+        arenas.put(arenaID, arena);
     }
 
-    public boolean createArena(String arenaName){
-        if(arenas.containsKey(arenaName)) return false;
+    public boolean createArena(String arenaID){
+        if(arenas.containsKey(arenaID)) return false;
 
-        arenas.put(arenaName, new Arena(plugin, arenaName));
+        arenas.put(arenaID, new Arena(plugin, arenaID));
         return true;
     }
 
-    public Arena getArena(String arenaName){
-        return arenas.get(arenaName);
+    public Arena getArena(String arenaID){
+        return arenas.get(arenaID);
     }
 
     public void shutDown() {
