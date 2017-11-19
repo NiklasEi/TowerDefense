@@ -2,7 +2,6 @@ package me.nikl.towerdefense.arena;
 
 import me.nikl.towerdefense.Main;
 import me.nikl.towerdefense.util.StringUtil;
-import me.nikl.towerdefense.wave.WavesManager;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -20,13 +19,13 @@ public class ArenaManager {
 
     private Main plugin;
 
-    private WavesManager wavesManager;
+    //private WavesManager wavesManager;
 
     private HashMap<String, Arena> arenas = new HashMap<>();
 
     public ArenaManager(Main plugin){
         this.plugin = plugin;
-        this.wavesManager = new WavesManager(plugin);
+        //this.wavesManager = new WavesManager(plugin);
 
         loadArenas();
     }
@@ -85,9 +84,5 @@ public class ArenaManager {
             arena.shutDown();
         }
         // ToDo: save arenas
-    }
-
-    public WavesManager getWavesManager() {
-        return wavesManager;
     }
 }

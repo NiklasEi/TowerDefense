@@ -4,19 +4,12 @@ import me.nikl.towerdefense.arena.ArenaManager;
 import me.nikl.towerdefense.command.ArenaCommand;
 import me.nikl.towerdefense.command.MainCommand;
 import me.nikl.towerdefense.command.Testing;
-import net.citizensnpcs.Citizens;
-import net.citizensnpcs.api.ai.event.NavigationCompleteEvent;
-import net.citizensnpcs.api.npc.NPC;
 import net.milkbowl.vault.economy.Economy;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.EntityType;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -25,7 +18,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.util.Iterator;
 import java.util.logging.Level;
 
 /**
@@ -43,9 +35,6 @@ public class Main extends JavaPlugin{
 
     // economy
     public static Economy econ = null;
-
-    // citizens plugin
-    Citizens citizens = null;
 
     // plugin configuration
     private FileConfiguration config;

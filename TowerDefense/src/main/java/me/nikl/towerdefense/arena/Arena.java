@@ -1,10 +1,7 @@
 package me.nikl.towerdefense.arena;
 
 import me.nikl.towerdefense.Main;
-import me.nikl.towerdefense.npc.monster.Monster;
 import me.nikl.towerdefense.util.StringUtil;
-import me.nikl.towerdefense.wave.Wave;
-import net.citizensnpcs.Citizens;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -32,26 +29,13 @@ public class Arena {
 
     private LinkedList<Location> path = new LinkedList<>();
 
-    private LinkedList<Wave> waves = new LinkedList<>();
+    private LinkedList waves = new LinkedList<>();
     private int currentWave = 0;
-
-    private Citizens citizens;
 
     private ArenaTimer arenaTimer;
 
     public Arena(Main plugin, String arenaName){
         this.plugin = plugin;
-        citizens = (Citizens) plugin.getServer().getPluginManager().getPlugin("Citizens");
-        this.name = arenaName;
-
-        LinkedList<Monster> monsters = new LinkedList<>();
-        monsters.add(Monster.ZOMBIE);
-        waves.add(new Wave(this, monsters));
-
-        LinkedList<Monster> monsters2 = new LinkedList<>();
-        monsters2.add(Monster.ZOMBIE);
-        monsters2.add(Monster.ZOMBIE);
-        waves.add(new Wave(this, monsters2));
 
         this.arenaTimer = new ArenaTimer(plugin, this);
 
@@ -85,7 +69,7 @@ public class Arena {
     }
 
     public void clear() {
-        if(status == ArenaStatus.WAVE) waves.get(currentWave).shutDown();
+        if(status == ArenaStatus.WAVE) waves.get(currentWave);
         status = ArenaStatus.UNINITIALIZED;
         path.clear();
     }
@@ -93,8 +77,8 @@ public class Arena {
     public boolean start(){
         if(status != ArenaStatus.STOPED) return false;
 
-        waves.get(currentWave).start();
-        plugin.getArenaManager().getWavesManager().addWave(this, waves.get(currentWave));
+        waves.get(currentWave);
+        plugin.getArenaManager().getWavesManager();
         status = ArenaStatus.WAVE;
         return true;
     }
@@ -102,7 +86,7 @@ public class Arena {
     public void shutDown() {
         if(status == ArenaStatus.UNINITIALIZED) return;
 
-        waves.get(currentWave).shutDown();
+        //waves.get(currentWave).shutDown();
 
         File saveFile = new File(plugin.getDataFolder().toString() + File.separatorChar + "arenas" + File.separatorChar + name + ".yml");
         if(!saveFile.exists()){
@@ -142,20 +126,12 @@ public class Arena {
         return path.get(0);
     }
 
-    public Citizens getCitizens() {
-        return citizens;
-    }
-
-    public Wave getWave() {
-        return waves.get(currentWave);
-    }
-
     public LinkedList<Location> getPath() {
         return path;
     }
 
     public void nextWave() {
-        plugin.getArenaManager().getWavesManager().removeWave(this);
+        plugin.getArenaManager().getWavesManager();//.removeWave(this);
         if(currentWave >= waves.size() - 1) {
             Bukkit.getConsoleSender().sendMessage("  Waves all through! Game is done!");
             status = ArenaStatus.STOPED;
@@ -163,7 +139,7 @@ public class Arena {
             return;
         }
         currentWave++;
-        waves.get(currentWave).start();
-        plugin.getArenaManager().getWavesManager().addWave(this, waves.get(currentWave));
+        waves.get(currentWave);//.start();
+        plugin.getArenaManager().getWavesManager();//.addWave(this, waves.get(currentWave));
     }
 }

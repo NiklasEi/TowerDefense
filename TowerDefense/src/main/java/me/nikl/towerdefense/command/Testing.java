@@ -17,8 +17,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import java.util.Iterator;
-
 /**
  * Created by Niklas on 18.09.2017.
  */
